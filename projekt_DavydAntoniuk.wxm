@@ -1,0 +1,263 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 22.04.0 ] */
+/* [wxMaxima: title   start ]
+Projekt Maxima Davyd Antoniuk
+   [wxMaxima: title   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Badanie przebiegu zmienności funkcji
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+Funkcja
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+g(x):=(3)/(x^2-4);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+Dziedzina funkcji
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+roots: solve(x^2-4=0, x);
+print("Dziedzina: R \\ {", roots, "}");
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+ Punkty przecięcia z OX
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+punkty_ox: solve(g(x)=0,x);
+if ( length ( punkty_ox ) < 1) then
+    print (" Nie ma punktów przecięcia z OX ")
+else
+    print (" Punkty przecięcia z OX :" , punkty_ox );
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+Punkty przecięcia z OY
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+punkty_oy: g(0);
+print("Punkt przecięcia z OY:", punkty_oy);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+Ekstrema lokalne
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+extrema: solve(diff(g(x), x) = 0, x);
+
+if length(extrema) > 0 then (
+    for i: 1 thru length(extrema) do (
+        extrema_znacz: g(extrema[i]),
+        druga_poch: diff(g(x), x, 2),
+        druga_poch_znacz: subst(x = extrema[i], druga_poch),
+    
+        if rhs(druga_poch_znacz) < 0 then (  
+            print("Maksimum lokalne w punkcie ", extrema[i], ": ", rhs(extrema_znacz))
+        )
+        elseif rhs(druga_poch_znacz) > 0 then (
+            print("Minimum lokalne w punkcie ", extrema[i], ": ", rhs(extrema_znacz))
+        )
+        else (
+            print("Punkt przecięcia w punkcie ", extrema[i], ": ", rhs(extrema_znacz))
+        )
+    )
+)
+
+else (
+    print("Funkcja nie ma ekstremów")
+);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+ Asymptoty pionowe, poziomowe, ukośne
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: subsect start ]
+Asymptoty pionowe
+   [wxMaxima: subsect end   ] */
+
+
+/* [wxMaxima: input   start ] */
+pionowe_asymptoty: roots;
+if length(pionowe_asymptoty) > 0 then (
+    print("Pionowe asymptote:", pionowe_asymptoty)
+)
+else (
+    print("Funkcja nie ma pionowych asymptot")
+);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: subsect start ]
+Asymptoty poziomowe, ukośne
+   [wxMaxima: subsect end   ] */
+
+
+/* [wxMaxima: input   start ] */
+asympt_poz_prawo: limit(g(x), x, infinity);
+asympt_poz_lewo: limit(g(x), x, -infinity);
+
+if is(infinity = asympt_poz_prawo) and is(infinity = asympt_poz_lewo) then (
+    a: limit(g(x)/x, x, infinity),
+    b: limit(g(x) - a*x, x, infinity),
+    if is(a = infinity) and is(b = infinity) then (
+        print("Funkcja nie ma asymptot ukosnych")
+    )
+else (
+        y: a * x + b,
+        print("g(x) ma asymptotę ukośną obustronną y =", y)
+    )
+)
+elseif (is(infinity = asympt_poz_prawo) and not -infinity = asympt_poz_lewo) or 
+       (is(infinity = asympt_poz_prawo) and -infinity = asympt_poz_lewo) then (
+    print("F(x) ma asymptotę prawostronną od", asympt_poz_prawo, "do +nieskończoność")
+)
+elseif (is(infinity = asympt_poz_lewo) and not -infinity = asympt_poz_prawo) or 
+       (is(infinity = asympt_poz_prawo) and -infinity = asympt_poz_lewo) then (
+    print("F(x) ma asymptotę lewostronną  od - nieskończoność do", asympt_poz_lewo)
+)
+else (
+    if is(asympt_poz_prawo = asympt_poz_lewo) then (
+        print("Poziomowa obustronna asymptota: y =", asympt_poz_prawo)
+    )
+    else (
+        print("Funkcja ma asymptotę lewostronną od - nieskończoność do", asympt_poz_lewo, 
+              "i asymptotę prawostronną od", asympt_poz_prawo, "do +nieskończoność")
+    )
+);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+ Granice na krańcach dziedziny, i dla elementów poza dziedziną
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+print("Granica na - nieskończoność:", limit(g(x), x, -inf));
+print("Granica na +nieskończoność:", limit(g(x), x, inf));
+for i: 1 thru length(roots) do (
+    if (is(limit(g(x), x, roots[i], plus) = limit(g(x), x, roots[i], minus))) then
+        print("Granica w punkcie", roots[i], "istnieje")
+    else
+        print("Granica w punkcie", roots[i], "nie istnieje")
+);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+Monotoniczność
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+pkt_mononotoniczne: roots$
+pochodna_zero: realpart(solve(diff(g(x), x)=0, x))$
+pkt_mononotoniczne: append(pkt_mononotoniczne, pochodna_zero)$
+pkt_mononotoniczne: sort(listify(setify(pkt_mononotoniczne)), lambda([p1, p2], rhs(p1) < rhs(p2)))$
+for i: 1 thru length(pkt_mononotoniczne) do (
+    pkt_przedzialow: subst(x = pkt_mononotoniczne[i] - 0.1, diff(g(x), x)),
+    if (is(pkt_mononotoniczne[i] = pkt_mononotoniczne[1])) then (
+        if (rhs(pkt_przedzialow) > 0) then
+            print("Rosnąca na przedziale od - nieskończoność do ", pkt_mononotoniczne[i])
+        else
+            print("Malejąca na przedziale od - nieskończoność do ",pkt_mononotoniczne[i])
+    )
+    else (
+        if (rhs(pkt_przedzialow) > 0) then
+            print("Rosnąca od ", pkt_mononotoniczne[i - 1], " do ", pkt_mononotoniczne[i])
+        else
+            print("Malejąca od ",pkt_mononotoniczne[i - 1], " do ", pkt_mononotoniczne[i])
+    )
+)$
+if (rhs(subst(x = pkt_mononotoniczne[length(pkt_mononotoniczne)] + 0.1, diff(g(x), x))) > 0) then
+    print("Rosnąca od ", pkt_mononotoniczne[length(pkt_mononotoniczne)], " do  +nieskończoność")
+else
+    print("Malejąca od ", pkt_mononotoniczne[length(pkt_mononotoniczne)], " do  +nieskończoność");
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+Wklęslość / wypuklość funkcji
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+pochodna_zero : realpart ( solve ( second_der = 0 , x )) $
+pochodna_zero : sort ( append ( pochodna_zero , roots )) $
+for i : 1 thru length (pochodna_zero ) do
+(
+    pkt_przedzialow : subst ( x =pochodna_zero [ i ] -0.1 ,
+    diff ( g ( x ) ,x ,2)) ,
+    if ( is ( pochodna_zero [ i ]= pochodna_zero [1])) then
+    (
+        if ( rhs ( pkt_przedzialow ) >0) then
+            print (" Wypukla od - nieskończoność do " , pochodna_zero [ i ])
+        else
+            print (" Wklęsla od - nieskończoność do " , pochodna_zero [ i ])
+    ) 
+    else
+    (
+        if ( rhs ( pkt_przedzialow ) >0) then
+            print (" Wypukla od " , pochodna_zero [i -1] ," do " , pochodna_zero [ i ])
+        else
+            print (" Wklęsla od " , pochodna_zero [i -1] ," do " , pochodna_zero [ i ])
+    )
+) $
+
+ostatni_element : poch_zero [ length ( poch_zero )] $
+if ( rhs ( subst ( x = ostatni_element +0.1 ,
+    diff ( g( x ) ,x ,2))) >0) then
+    print (" Wypukla od " , ostatni_element , " do + nieskończoność ")
+else
+    print (" Wklęsla od " , ostatni_element , " do  + nieskończoność");
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: section start ]
+Wykres
+   [wxMaxima: section end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d ([ g ( x ) ,[ discrete , [ rhs ( extrema )] , [ g ( rhs ( extrema ))]] ,
+    asympt_poz_prawo ,
+    [ parametric , rhs ( pionowe_asymptoty [1]) , t , [t , -100 , 100]] ,
+    [ parametric , rhs ( pionowe_asymptoty [2]) , t , [t , -100 , 100]]] ,
+    [x , -10 ,10] , 
+    [y , -10 ,10] ,
+    [ style , lines , points , lines , lines , lines ] ,
+    [ legend , "3/( x ^2 -4)" , "Maksimum lokalne" , "Pozioma asymptota" ,
+    "Pionowa asymptota" , "Pionowa asymptota "] ,
+    [ point_type , circle ] ,
+    [ xlabel , " x "] ,
+    [ ylabel , " y "] ,
+    [ title , "g( x )= 3/( x ^2 -4)"]
+) $
+/* [wxMaxima: input   end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 22.04.0"$
